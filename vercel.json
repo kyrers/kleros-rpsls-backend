@@ -8,8 +8,8 @@
   ],
   "routes": [
     {
-      "source": "/(.*)",
-      "destination": "server.ts",
+      "src": "/(.*)",
+      "dest": "server.ts",
       "headers": {
         "Access-Control-Allow-Origin": "http://localhost:3000, https://kleros-rpsls.vercel.app",
         "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
