@@ -1,6 +1,6 @@
 # kleros-rpsls-backend
 
-A simple backend for the Kleros RPSLS game.
+A simple backend for the Kleros RPSLS game. This was deployed to Vercel and uses a [Neon Serverless Postgres](https://vercel.com/marketplace/neon) database.
 
 ### Endpoints
 

@@ -7,7 +7,7 @@ let database: Pool;
 const connectDb = async () => {
   try {
     database = new Pool({
-      connectionString: process.env.DATABASE_CONNECTION_STRING,
+      connectionString: process.env.DATABASE_URL,
     });
 
     database.on("error", (err: any) =>
