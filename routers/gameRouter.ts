@@ -1,28 +1,51 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import {
   createGame,
   deleteGame,
   getGameByPlayerAddress,
 } from "../controller/gameController";
+import {
+  validateGameAddress,
+  validateGameData,
+  validatePlayerAddress,
+} from "../middleware/gameMiddleware";
 
 const gameRouter = express.Router();
 
-gameRouter.get("/", async (req: Request, res: Response) => {
-  const { player } = req.query;
-  if (!player) {
-    res.status(400).send("Player address is required");
-    return;
+gameRouter.get(
+  "/",
+  validatePlayerAddress,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      res.json(await getGameByPlayerAddress(req.query.player as string));
+    } catch (error) {
+      next(error);
+    }
   }
+);
 
-  res.send(await getGameByPlayerAddress(player as string));
-});
+gameRouter.post(
+  "/",
+  validateGameData,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      res.send(await createGame(req.body));
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
-gameRouter.post("/", async (req: Request, res: Response) => {
-  res.send(await createGame(req.body));
-});
-
-gameRouter.delete("/:gameAddress", async (req: Request, res: Response) => {
-  res.send(await deleteGame(req.params.gameAddress));
-});
+gameRouter.delete(
+  "/:gameAddress",
+  validateGameAddress,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      res.send(await deleteGame(req.params.gameAddress));
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default gameRouter;

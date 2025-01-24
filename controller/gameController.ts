@@ -1,4 +1,5 @@
 import { database } from "../db";
+import { CustomError } from "../model/error";
 import { Game } from "../model/game";
 import {
   CREATE_GAME_QUERY,
@@ -12,9 +13,13 @@ export const getGameByPlayerAddress = async (playerAddress: string) => {
       SELECT_GAME_BY_PAYER_ADDRESS_QUERY,
       [playerAddress]
     );
-    return rows[0];
-  } catch (_) {
-    return `An error occurred getting the game.`;
+
+    return rows[0] ?? null;
+  } catch (error: any) {
+    throw new CustomError(
+      400,
+      error.detail ?? "An error occurred getting the game."
+    );
   }
 };
 
@@ -27,11 +32,10 @@ export const createGame = async (game: Game) => {
       game.stake,
       game.random_value,
     ]);
+
     return rows[0];
-  } catch (err: any) {
-    return err.detail
-      ? err.detail
-      : "Unexpected error occurred, please try again.";
+  } catch (error: any) {
+    throw new CustomError(400, error.detail ?? "Failed to create game");
   }
 };
 
@@ -41,14 +45,12 @@ export const deleteGame = async (address: string) => {
       address,
     ]);
 
-    if (rowCount && rowCount > 0) {
-      return "Game deleted successfully.";
+    if (!rowCount) {
+      throw new CustomError(404, "Game not found");
     }
 
-    return "Unable to delete game.";
-  } catch (err: any) {
-    return err.detail
-      ? err.detail
-      : "Unexpected error occurred, please try again.";
+    return rowCount;
+  } catch (error: any) {
+    throw new CustomError(400, error.detail ?? "Failed to delete game");
   }
 };
