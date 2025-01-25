@@ -49,7 +49,7 @@ export const deleteGame = async (address: string) => {
       throw new CustomError(404, "Game not found");
     }
 
-    return rowCount;
+    return "Game deleted successfully.";
   } catch (error: any) {
     throw new CustomError(400, error.detail ?? "Failed to delete game");
   }
